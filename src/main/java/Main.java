@@ -1,11 +1,10 @@
-package com.sheva;
-
 import com.sheva.domain.Gym;
 import com.sheva.domain.User;
 import com.sheva.service.GymService;
 import com.sheva.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import javax.swing.*;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -78,6 +77,10 @@ public class Main {
         for (Map.Entry<String, Object> entry : userStats.entrySet()) {
             System.out.println(entry.getKey() + " = " + entry.getValue());
         }
+
+        JComboBox comboBox = new JComboBox();
+        comboBox.setEditable(true);
+
 
 
 

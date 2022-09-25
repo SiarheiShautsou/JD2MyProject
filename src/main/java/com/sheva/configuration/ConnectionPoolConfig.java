@@ -21,17 +21,17 @@ public class ConnectionPoolConfig {
         return new NamedParameterJdbcTemplate(dataSource);
     }
 
-    @Bean
-    public DataSource hikariDataSource(DatabaseProperties databaseConfig){
-
-        HikariDataSource hikariDataSource = new HikariDataSource();
-
-        hikariDataSource.setDriverClassName(databaseConfig.getDriverName());
-        hikariDataSource.setJdbcUrl(databaseConfig.getUrl());
-        hikariDataSource.setUsername(databaseConfig.getLogin());
-        hikariDataSource.setPassword(databaseConfig.getPassword());
-        hikariDataSource.setMaximumPoolSize(10);
-
-        return hikariDataSource;
-    }
+//    @Bean
+//    public DataSource hikariDataSource(DatabaseProperties databaseConfig){
+//
+//        HikariDataSource hikariDataSource = new HikariDataSource();
+//
+//        hikariDataSource.setDriverClassName(databaseConfig.getDriverName());
+//        hikariDataSource.setJdbcUrl(databaseConfig.getUrl());
+//        hikariDataSource.setUsername(databaseConfig.getLogin());
+//        hikariDataSource.setPassword(databaseConfig.getPassword());
+//        hikariDataSource.setMaximumPoolSize(10);
+//
+//        return hikariDataSource;
+//    }
 }

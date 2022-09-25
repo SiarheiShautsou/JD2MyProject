@@ -48,5 +48,10 @@ public class User {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 
-
+//    public Point userPosition(Integer lon, Integer lat) {
+//
+//
+//
+//        return new Point(lon, lat);
+//    }
 }

@@ -23,6 +23,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public User findById(long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     public Map<String, Object> getUserStats() {
         return userRepository.getUserStats();
     }
@@ -40,5 +45,15 @@ public class UserServiceImp implements UserService {
     @Override
     public User getUserByFullName(String name, String surname) {
         return userRepository.getUserByFullName(name, surname);
+    }
+
+    @Override
+    public List<User> search(int limit, int offset) {
+        return userRepository.findAll(limit, offset);
+    }
+
+    @Override
+    public Long deleteUser(Long id) {
+        return userRepository.delete(id);
     }
 }

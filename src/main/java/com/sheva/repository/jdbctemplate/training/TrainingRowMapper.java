@@ -2,6 +2,7 @@ package com.sheva.repository.jdbctemplate.training;
 
 import com.sheva.domain.Training;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import static com.sheva.repository.jdbctemplate.training.TrainingTableColumns.CR
 import static com.sheva.repository.jdbctemplate.training.TrainingTableColumns.MODIFICATION_DATE;
 import static com.sheva.repository.jdbctemplate.training.TrainingTableColumns.TRAINING_TYPE_ID;
 
+@Component
 public class TrainingRowMapper implements RowMapper<Training> {
     @Override
     public Training mapRow(ResultSet rs, int rowNum) throws SQLException {

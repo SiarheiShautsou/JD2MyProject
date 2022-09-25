@@ -1,8 +1,5 @@
 package com.sheva.domain;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public enum Roles {
-    ADMIN, CLIENT,TRAINER
+    ROLE_ADMIN, ROLE_CLIENT, ROLE_TRAINER, ROLE_ANONYMOUS
 }

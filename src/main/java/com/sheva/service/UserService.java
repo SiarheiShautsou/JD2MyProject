@@ -9,6 +9,8 @@ public interface UserService {
 
     List<User> findAll();
 
+    User findById(long id);
+
     Map<String, Object> getUserStats();
 
     User create(User object);
@@ -16,5 +18,9 @@ public interface UserService {
     User update(User object, Long id);
 
     User getUserByFullName(String name, String surname);
+
+    List<User> search(int limit, int offset);
+
+    Long deleteUser(Long id);
 
 }
