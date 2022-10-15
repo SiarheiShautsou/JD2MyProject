@@ -3,6 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>common</module>
+        <module>api</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,7 +19,7 @@
     <artifactId>JasyPro</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -26,7 +30,7 @@
         <log4j.version>1.2.17</log4j.version>
         <postgis.version>2021.1.0</postgis.version>
         <lombok.version>1.18.22</lombok.version>
-        <jwt.version>0.11.5</jwt.version>
+        <jwt.version>0.10.1</jwt.version>
 
     </properties>
 
@@ -110,11 +114,11 @@
             <version>${log4j.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>net.postgis</groupId>-->
-<!--            <artifactId>postgis-jdbc</artifactId>-->
-<!--            <version>${postgis.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>net.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+            <version>${postgis.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -153,6 +157,16 @@
             <artifactId>hibernate-jpamodelgen</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -169,6 +183,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
