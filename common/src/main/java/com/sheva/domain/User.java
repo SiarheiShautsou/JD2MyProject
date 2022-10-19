@@ -35,9 +35,9 @@ import java.util.Set;
 @Data
 @Entity
 @EqualsAndHashCode(exclude = {"roles", "bodyParameters", "clientTrainings", "trainerTrainings",
-"subscriptions", "userCredentials", "trainerGym"})
+"subscriptions", "trainerGym"})
 @ToString(exclude = {"roles", "bodyParameters", "clientTrainings", "trainerTrainings",
-        "subscriptions", "userCredentials", "trainerGym"})
+        "subscriptions", "trainerGym"})
 @Table(name = "users")
 public class User {
 
@@ -67,15 +67,12 @@ public class User {
     private UserCredentials userCredentials;
 
     @Column(name = "is_deleted")
-    @JsonIgnore
     private Boolean isDeleted;
 
     @Column(name = "creation_date")
-    @JsonIgnore
     private Timestamp creationDate;
 
     @Column(name = "modification_date")
-    @JsonIgnore
     private Timestamp modificationDate;
 
     @Column(name = "gender")

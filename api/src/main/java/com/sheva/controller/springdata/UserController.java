@@ -1,7 +1,9 @@
 package com.sheva.controller.springdata;
 
+import com.sheva.controller.converters.UserCreateRequestConverter;
 import com.sheva.controller.requests.UserCreateRequest;
 import com.sheva.domain.Gender;
+import com.sheva.domain.Roles;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.domain.UserCredentials;
@@ -9,8 +11,10 @@ import com.sheva.domain.UserLocation;
 import com.sheva.repository.springdata.RoleSpringDataRepository;
 import com.sheva.repository.springdata.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,8 +30,10 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +44,7 @@ public class UserController {
 
     private final RoleSpringDataRepository roleRepository;
 
+    private final ConversionService converter;
 
     @GetMapping("/all")
     public ResponseEntity<Object> findAllUsers(){
@@ -63,44 +70,29 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Object> createUser(@RequestBody UserCreateRequest request){
+    public ResponseEntity<Object> createUser(@RequestBody UserCreateRequest createRequest){
 
-        User user = new User();
-        user.setUserName(request.getUserName());
-        user.setUserSurname(request.getUserSurname());
-        user.setGender(Gender.valueOf("FEMALE"));
-        user.setIsDeleted(false);
-        user.setBirth(new Timestamp(new Date().getTime()));
-        user.setCreationDate(new Timestamp(new Date().getTime()));
-        user.setModificationDate(new Timestamp(new Date().getTime()));
+        User user = converter.convert(createRequest, User.class);
 
-        UserLocation location = new UserLocation();
-        location.setCountry(request.getUserCountry());
-        location.setCity(request.getUserCity());
-        location.setLatitude(8494666L);
-        location.setLongitude(6846846L);
-
-        user.setLocation(location);
-
-        UserCredentials credentials = new UserCredentials();
-        credentials.setUserLogin(request.getUserLogin());
-        credentials.setUserPassword(request.getUserPassword());
-        credentials.setUserEmail(request.getUserEmail());
-        credentials.setMobileNumber(request.getUserMobileNumber());
-
-        user.setUserCredentials(credentials);
-
-        User createdUser = userRepository.save(user);
-
-        userRepository.createRoleRow(roleRepository.findByRoleName(SystemRoles.valueOf("ROLE_TRAINER")).getId(),
-                createdUser.getId(),
-                new Timestamp(new Date().getTime()),
-                new Timestamp(new Date(). getTime()));
+        User createdUser = userRepository.save(setRole(user));
 
         Map<String, Object> model = new HashMap<>();
-        model.put("user", createdUser);
+        model.put("user", userRepository.findById(createdUser.getId()).get());
 
         return new ResponseEntity<>(model, HttpStatus.CREATED);
+    }
+
+    private User setRole(User user){
+        Set<Roles> roles = user.getRoles();
+
+        Set<Roles> updatedRoles = new HashSet<>();
+        if(!CollectionUtils.isEmpty(roles)){
+            updatedRoles.addAll(roles);
+        }
+        updatedRoles.add(roleRepository.findById(2L).get());
+
+        user.setRoles(updatedRoles);
+        return user;
     }
 
     @DeleteMapping("/harddelete/{id}")
@@ -113,10 +105,12 @@ public class UserController {
     }
 
     @PatchMapping("/delete/{id}")
-    public ResponseEntity<Object> getUserIdDeleted(@PathVariable String id) {
+    public ResponseEntity<Object> getUserIdDeletedStatus(@PathVariable String id) {
 
         Long userId = Long.parseLong(id);
-
+        User user = userRepository.findById(userId).get();
+        user.setIsDeleted(true);
+        userRepository.save(user);
 
         return new ResponseEntity<>(Collections.singletonMap("deleted", userRepository.findById(userId)), HttpStatus.OK);
     }

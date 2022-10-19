@@ -1,4 +1,4 @@
-package com.sheva.controller.exceptionhandler;
+package com.sheva.exceptionhandler;
 
 
 import com.sheva.exception.NonSuchEntityException;

@@ -41,6 +41,7 @@ public class SubscriptionController {
     public ResponseEntity<Object> createSubscription(@RequestBody SubscriptionCreateRequest request){
 
         Subscription subscription = new Subscription();
+
         subscription.setIsUnlimited(request.getIsUnlimited());
         subscription.setTrainingsCount(request.getTrainingsCount());
 

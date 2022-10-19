@@ -11,6 +11,6 @@ public class GymCreateRequest {
 
     private String city;
 
-    private String square;
+    private Integer square;
 
 }
