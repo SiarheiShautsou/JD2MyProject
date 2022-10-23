@@ -1,6 +1,7 @@
 package com.sheva.controller.springdata;
 
 import com.sheva.repository.springdata.TrainingSpringDataRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,11 @@ public class TrainingController {
 
     private final TrainingSpringDataRepository trainingRepository;
 
+    @Operation(summary = "Find all trainings")
     @GetMapping()
     public ResponseEntity<Object> findAllTrainings(){
         return new ResponseEntity<>(Collections.singletonMap("result", trainingRepository.findAll()), HttpStatus.OK);
     }
+
+
 }

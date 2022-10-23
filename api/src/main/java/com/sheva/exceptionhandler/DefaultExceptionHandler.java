@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 
 @ControllerAdvice
@@ -21,7 +22,7 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionID(UUIDGenerator.generateUUID())
                 .errorCode(2)
-                .errorMessage("General error")
+                .errorMessage(e.getMessage())
                 .e(e.getClass().toString())
                 .build();
 
@@ -42,7 +43,7 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(NumberFormatException.class)
+    @ExceptionHandler({NumberFormatException.class, ConstraintViolationException.class})
     public ResponseEntity<Object> handleNumberFormatException(Exception e) {
 
         ErrorContainer error = ErrorContainer

@@ -1,7 +1,6 @@
 package com.sheva.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -27,8 +26,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -45,9 +45,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Size(min = 2, max = 20)
     @Column(name = "user_name")
     private String userName;
 
+    @NotBlank
+    @Size(min = 2, max = 30)
     @Column(name = "user_surname")
     private String userSurname;
 
@@ -55,12 +59,6 @@ public class User {
     private Timestamp birth;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "country", column = @Column(name = "country")),
-            @AttributeOverride(name = "city", column = @Column(name = "city")),
-            @AttributeOverride(name = "latitude", column = @Column(name = "user_latitude")),
-            @AttributeOverride(name = "longitude", column = @Column(name = "user_longitude"))
-    })
     private UserLocation location;
 
     @Embedded
@@ -82,7 +80,7 @@ public class User {
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(value= FetchMode.SELECT)
     @JsonIgnoreProperties("users")
-    private Set<Roles> roles;
+    private Set<UserRole> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(value= FetchMode.SELECT)

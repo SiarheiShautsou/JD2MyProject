@@ -28,7 +28,7 @@ public class BodyParameters {
     private Integer height;
 
     @Column(name = "weight")
-    private Integer weight;
+    private Double weight;
 
     @Column(name = "bust")
     private Integer bust;

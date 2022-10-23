@@ -25,3 +25,9 @@ server:
 jwt:
   secret: qwepuisdhfaksdjflsdfn12321___**
   expiration: 60000
+
+---
+
+springdoc:
+  api-docs:
+    path: /javainuse-openapi

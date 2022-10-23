@@ -25,9 +25,6 @@ public class FrontController extends HttpServlet {
 
             req.setAttribute("user", "Slava");
 
-//            UserRepository userRepository = new UserRepository();
-//
-//            req.setAttribute("users", userRepository.findAll());
 
             dispatcher.forward(req, resp);
         }

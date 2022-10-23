@@ -1,6 +1,6 @@
 package com.sheva.repository.springdata;
 
-import com.sheva.domain.TrainingTypes;
+import com.sheva.domain.TrainingType;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TrainingTypeSpringDataRepository extends JpaRepository<TrainingTypes, Integer> {
+public interface TrainingTypeSpringDataRepository extends JpaRepository<TrainingType, Integer> {
 
     @Cacheable("training types")
-    @Query(value = "select t from TrainingTypes t")
-    List<TrainingTypes> findAllCustomQuery();
+    @Query(value = "select t from TrainingType t")
+    List<TrainingType> findAllCustomQuery();
 }

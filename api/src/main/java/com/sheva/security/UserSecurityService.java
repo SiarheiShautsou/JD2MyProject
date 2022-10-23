@@ -1,6 +1,6 @@
 package com.sheva.security;
 
-import com.sheva.domain.Roles;
+import com.sheva.domain.UserRole;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.repository.springdata.RoleSpringDataRepository;
@@ -42,7 +42,7 @@ public class UserSecurityService implements UserDetailsService {
                         AuthorityUtils.commaSeparatedStringToAuthorityList(
                                 roleRepository.findByUsersId(user.getId())
                                         .stream()
-                                        .map(Roles::getRoleName)
+                                        .map(UserRole::getRoleName)
                                         .map(SystemRoles::name)
                                         .collect(Collectors.joining(","))
                         )

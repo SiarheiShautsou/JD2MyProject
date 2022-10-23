@@ -94,7 +94,7 @@ public class JwtTokenHelper {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }
 
-    private String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails){
 
         Map<String, Object> claims = new HashMap<>();
         claims.put(SUBJECT, userDetails.getUsername());

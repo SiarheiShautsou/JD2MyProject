@@ -36,6 +36,12 @@ public class Subscription {
     @Column(name = "trainings_count")
     private Integer trainingsCount;
 
+    @Column(name = "creation_date")
+    private Timestamp creationDate;
+
+    @Column(name = "modification_date")
+    private Timestamp modificationDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference

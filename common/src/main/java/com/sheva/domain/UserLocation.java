@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Data
@@ -14,11 +15,15 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 public class UserLocation {
 
+    @Column(name = "country")
     private String country;
 
+    @Column(name = "city")
     private String city;
 
-    private Long latitude;
+    @Column(name = "street")
+    private String street;
 
-    private Long longitude;
+    @Column(name = "building")
+    private String building;
 }

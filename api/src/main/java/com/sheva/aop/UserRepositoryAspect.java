@@ -14,7 +14,7 @@ public class UserRepositoryAspect {
 
     private static final Logger log = Logger.getLogger(UserRepositoryAspect.class);
 
-    @Pointcut("execution(* com.sheva.repository.jdbctemplate.user.JdbcTemplateUserRepository.*(..))")
+    @Pointcut("execution(* com.sheva.repository.springdata.UserSpringDataRepository.*(..))")
     public void aroundRepositoryPointCut(){
     }
 

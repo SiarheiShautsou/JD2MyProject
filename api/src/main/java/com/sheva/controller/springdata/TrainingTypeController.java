@@ -1,6 +1,6 @@
 package com.sheva.controller.springdata;
 
-import com.sheva.domain.TrainingTypes;
+import com.sheva.domain.TrainingType;
 import com.sheva.repository.springdata.TrainingTypeSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,10 +31,10 @@ public class TrainingTypeController {
     @PostMapping("/create/{trainingName}")
     public ResponseEntity<Object> createTrainingType(@PathVariable String trainingName){
 
-        TrainingTypes trainingType = new TrainingTypes();
-        trainingType.setTrainingType(trainingName);
+        TrainingType trainingType = new TrainingType();
+        trainingType.setTrainingTypeName(trainingName);
 
-        TrainingTypes createdTrainingType = trainingTypeRepository.save(trainingType);
+        TrainingType createdTrainingType = trainingTypeRepository.save(trainingType);
 
         Map<String, Object> model = new HashMap<>();
         model.put("trainingType", createdTrainingType);

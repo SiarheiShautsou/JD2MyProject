@@ -18,6 +18,10 @@ public class UserCreateRequest {
 
     private String userCity;
 
+    private String userStreet;
+
+    private String userBuilding;
+
     private String gender;
 
     private String userLogin;

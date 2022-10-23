@@ -12,7 +12,7 @@
     </parent>
     <groupId>com.sheva</groupId>
     <artifactId>JasyPro</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <modules>
         <module>common</module>
@@ -28,9 +28,9 @@
         <hikaricp.version>5.0.1</hikaricp.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <log4j.version>1.2.17</log4j.version>
-        <postgis.version>2021.1.0</postgis.version>
         <lombok.version>1.18.22</lombok.version>
         <jwt.version>0.10.1</jwt.version>
+        <swagger.version>3.0.0</swagger.version>
 
     </properties>
 
@@ -115,12 +115,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.postgis</groupId>
-            <artifactId>postgis-jdbc</artifactId>
-            <version>${postgis.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>${jwt.version}</version>
@@ -165,6 +159,23 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
     </dependencies>
