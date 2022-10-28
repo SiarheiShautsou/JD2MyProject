@@ -1,7 +1,7 @@
 package com.sheva.controller.springdata;
 
 import com.sheva.domain.TrainingType;
-import com.sheva.repository.springdata.TrainingTypeSpringDataRepository;
+import com.sheva.repository.TrainingTypeSpringDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

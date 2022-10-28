@@ -1,13 +1,13 @@
 package com.sheva.controller.springdata;
 
-import com.sheva.controller.requests.SubscriptionChangeRequest;
-import com.sheva.controller.requests.SubscriptionCreateRequest;
+import com.sheva.controller.requests.subscription.SubscriptionChangeRequest;
+import com.sheva.controller.requests.subscription.SubscriptionCreateRequest;
 import com.sheva.domain.Gym;
 import com.sheva.domain.Subscription;
 import com.sheva.domain.User;
-import com.sheva.repository.springdata.GymSpringDataRepository;
-import com.sheva.repository.springdata.SubscriptionSpringDataRepository;
-import com.sheva.repository.springdata.UserSpringDataRepository;
+import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.repository.SubscriptionSpringDataRepository;
+import com.sheva.repository.UserSpringDataRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

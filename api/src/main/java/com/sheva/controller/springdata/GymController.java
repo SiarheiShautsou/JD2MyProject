@@ -1,9 +1,9 @@
 package com.sheva.controller.springdata;
 
-import com.sheva.controller.requests.GymChangeRequest;
-import com.sheva.controller.requests.GymCreateRequest;
+import com.sheva.controller.requests.gym.GymChangeRequest;
+import com.sheva.controller.requests.gym.GymCreateRequest;
 import com.sheva.domain.Gym;
-import com.sheva.repository.springdata.GymSpringDataRepository;
+import com.sheva.repository.GymSpringDataRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -19,13 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 import static java.lang.Integer.parseInt;
 

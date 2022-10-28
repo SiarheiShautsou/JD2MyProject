@@ -1,7 +1,7 @@
 package com.sheva.controller.springdata;
 
 import com.sheva.domain.UserRole;
-import com.sheva.repository.springdata.RoleSpringDataRepository;
+import com.sheva.repository.RoleSpringDataRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

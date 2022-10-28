@@ -1,33 +1,21 @@
 package com.sheva.controller.springdata;
 
-import com.sheva.controller.requests.TrainerCreateRequest;
-import com.sheva.controller.requests.UserChangeRequest;
-import com.sheva.controller.requests.UserCreateRequest;
+import com.sheva.controller.requests.user.TrainerCreateRequest;
+import com.sheva.controller.requests.user.UserChangeRequest;
+import com.sheva.controller.requests.user.UserCreateRequest;
 import com.sheva.controller.responses.ProfileResponse;
 import com.sheva.controller.responses.TrainerProfileResponse;
-import com.sheva.domain.Gym;
-import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
-import com.sheva.domain.UserRole;
-import com.sheva.repository.springdata.GymSpringDataRepository;
-import com.sheva.repository.springdata.RoleSpringDataRepository;
-import com.sheva.repository.springdata.UserSpringDataRepository;
-import com.sheva.service.UserService;
+import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.repository.RoleSpringDataRepository;
+import com.sheva.repository.UserSpringDataRepository;
+import com.sheva.service.user.UserServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,15 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 @RestController
@@ -61,7 +45,7 @@ public class UserController {
 
     private final GymSpringDataRepository gymRepository;
 
-    private final UserService userService;
+    private final UserServiceInterface userService;
 
     private final ConversionService converter;
 
@@ -96,10 +80,8 @@ public class UserController {
         User client = converter.convert(createRequest, User.class);
 
         User createdClient = userService.createClientAccount(client);
-        Map<String, Object> model = new HashMap<>();
-        model.put("result", createdClient);
 
-        return new ResponseEntity<>(model, HttpStatus.CREATED);
+        return new ResponseEntity<>(Collections.singletonMap("created", createdClient), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Trainer registration")
@@ -124,38 +106,22 @@ public class UserController {
 
         User user = converter.convert(changeRequest, User.class);
 
-        assert user != null;
-        User updatedUser = userRepository.save(user);
+        User updatedUser = userService.updateUser(user);
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("user", updatedUser);
-
-        return new ResponseEntity<>(model, HttpStatus.OK);
+        return new ResponseEntity<>(Collections.singletonMap("updated", updatedUser), HttpStatus.OK);
     }
 
 
     @Operation(summary = "Delete user")
-    @PatchMapping("/is-deleted/{id}")
+    @PatchMapping("/deleteAccount/{id}")
     public ResponseEntity<Object> getUserIdDeletedStatus(@PathVariable String id) {
 
         Long userId = Long.parseLong(id);
-        User user = userRepository.findById(userId).orElse(null);
-        assert user != null;
+        User user = userService.findUserById(userId);
         user.setIsDeleted(true);
-        userRepository.save(user);
+        userService.updateUser(user);
 
         return new ResponseEntity<>(Collections.singletonMap("deleted", userRepository.findById(userId)), HttpStatus.OK);
-    }
-
-
-    @Operation(summary = "Delete user forever")
-    @DeleteMapping("/delete-user/{id}")
-    public ResponseEntity<Object> deleteUserById(@PathVariable String id) {
-
-        Long userId = Long.parseLong(id);
-        userRepository.deleteById(userId);
-
-        return new ResponseEntity<>(Collections.singletonMap("user", userRepository.findById(userId)), HttpStatus.OK);
     }
 
 

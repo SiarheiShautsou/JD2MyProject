@@ -3,10 +3,10 @@ package com.sheva.controller.springdata;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.domain.UserRole;
-import com.sheva.repository.springdata.GymSpringDataRepository;
-import com.sheva.repository.springdata.RoleSpringDataRepository;
-import com.sheva.repository.springdata.SubscriptionSpringDataRepository;
-import com.sheva.repository.springdata.UserSpringDataRepository;
+import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.repository.RoleSpringDataRepository;
+import com.sheva.repository.SubscriptionSpringDataRepository;
+import com.sheva.repository.UserSpringDataRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,9 +87,17 @@ public class AdminController {
         userRepository.createRoleRow(userRole.getId(), user.getId(),
                 new Timestamp(new Date().getTime()), new Timestamp(new Date().getTime()));
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("user", user);
-
-        return new ResponseEntity<>(model, HttpStatus.OK);
+        return new ResponseEntity<>(Collections.singletonMap("user" , user), HttpStatus.OK);
     }
+
+    @Operation(summary = "Delete user forever")
+    @DeleteMapping("/delete-user/{id}")
+    public ResponseEntity<Object> deleteUserById(@PathVariable String id) {
+
+        Long userId = Long.parseLong(id);
+        userRepository.deleteById(userId);
+
+        return new ResponseEntity<>(Collections.singletonMap("user", userRepository.findById(userId)), HttpStatus.OK);
+    }
+
 }
