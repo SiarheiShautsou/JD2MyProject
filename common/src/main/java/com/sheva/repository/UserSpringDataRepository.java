@@ -1,5 +1,6 @@
 package com.sheva.repository;
 
+import com.sheva.domain.Gym;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.domain.UserRole;
@@ -33,6 +34,8 @@ public interface UserSpringDataRepository extends JpaRepository<User, Long> {
 
 //    @Query(value = "select u from User u inner join UserRole r where r.roleName like ")
     List<User> findAllByLocationCity(String city);
+
+    List<User> findAllByTrainerGym(Gym gym);
 
 
     @Modifying

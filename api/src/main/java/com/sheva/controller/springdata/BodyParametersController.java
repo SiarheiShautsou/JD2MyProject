@@ -4,10 +4,11 @@ import com.sheva.controller.requests.BodyParamCreateRequest;
 import com.sheva.controller.responses.BodyParametersResponse;
 import com.sheva.domain.BodyParameters;
 import com.sheva.domain.User;
-import com.sheva.repository.BodyParamSpringDataRepository;
-import com.sheva.repository.UserSpringDataRepository;
+import com.sheva.service.body.BodyParamsServiceInterface;
+import com.sheva.service.user.UserServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,26 +30,19 @@ import java.util.Map;
 @RequestMapping("/body-params")
 public class BodyParametersController {
 
-    private final BodyParamSpringDataRepository bodyRepository;
+    private final BodyParamsServiceInterface bodyParamsService;
 
-    private final UserSpringDataRepository userRepository;
+    private final UserServiceInterface userService;
 
-    @Operation(summary = "Find all body parameters")
-    @GetMapping
-    public ResponseEntity<Object> findAffBodyParameters(){
+    private final ConversionService converter;
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("body", bodyRepository.findAll());
-
-        return new ResponseEntity<>(parameters, HttpStatus.OK);
-    }
 
     @Operation(summary = "Find user's body parameters")
     @GetMapping("/user/{name}&{surname}")
-    public ResponseEntity<Object> findUserBodyParameters(@PathVariable("name") String name, @PathVariable("surname") String surname){
+    public ResponseEntity<Object> findUserBodyParameters(@PathVariable("name") String name, @PathVariable("surname") String surname) {
 
-        User user = userRepository.findUserByUserNameAndUserSurname(name, surname).orElse(null);
-        List<BodyParameters> userParameters = bodyRepository.findAllByUser(user);
+        User user = userService.findUserByNameAndSurname(name, surname);
+        List<BodyParameters> userParameters = bodyParamsService.findAllUserBodyParameters(user);
         List<BodyParametersResponse> responses = new ArrayList<>();
 
         for (BodyParameters userParameter : userParameters) {
@@ -72,37 +66,28 @@ public class BodyParametersController {
     @Operation(summary = "Add new body parameters for User")
     @PostMapping
     @Transactional
-    public ResponseEntity<Object> createBodyParameters(@RequestBody BodyParamCreateRequest request){
+    public ResponseEntity<Object> createBodyParameters(@RequestBody BodyParamCreateRequest request) {
 
-        User user = userRepository.findUserByUserNameAndUserSurname(request.getUserName(), request.getUserSurname()).get();
+        BodyParameters bodyParameter = converter.convert(request, BodyParameters.class);
 
-        BodyParameters bodyParameter = new BodyParameters();
-        bodyParameter.setUser(user);
-        bodyParameter.setHeight(request.getHeight());
-        bodyParameter.setWeight(request.getWeight());
-        bodyParameter.setBust(request.getBust());
-        bodyParameter.setWaist(request.getWaist());
-        bodyParameter.setHip(request.getHip());
-        bodyParameter.setCreationDate(request.getCreationDate());
-
-        BodyParameters createdBodyParam = bodyRepository.save(bodyParameter);
+        BodyParameters createdBodyParam = bodyParamsService.addNewBodyParameters(bodyParameter);
 
         Map<String, Object> parameter = new HashMap<>();
-        parameter.put("parameter", bodyRepository.findById(createdBodyParam.getId()));
+        parameter.put("parameter", bodyParamsService.findBodyParametersById(createdBodyParam.getId()));
 
         return new ResponseEntity<>(parameter, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Delete body parameters")
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteBodyParameters(@PathVariable String id){
+    public ResponseEntity<Object> deleteBodyParameters(@PathVariable String id) {
 
         Long bodyParamId = Long.parseLong(id);
-        BodyParameters bodyParam = bodyRepository.findById(bodyParamId).orElse(null);
-        bodyRepository.deleteById(bodyParamId);
+        BodyParameters bodyParams = bodyParamsService.findBodyParametersById(bodyParamId);
+        bodyParamsService.deleteBodyParameters(bodyParams);
 
         Map<String, Object> parameter = new HashMap<>();
-        parameter.put("deleted parameters", bodyParam);
+        parameter.put("deleted parameters", bodyParams);
 
         return new ResponseEntity<>(parameter, HttpStatus.OK);
     }

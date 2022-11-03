@@ -7,12 +7,15 @@ import com.sheva.repository.GymSpringDataRepository;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.repository.SubscriptionSpringDataRepository;
 import com.sheva.repository.UserSpringDataRepository;
+import com.sheva.service.body.BodyParamsServiceInterface;
+import com.sheva.service.gym.GymServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,10 @@ public class AdminController {
 
     private final UserSpringDataRepository userRepository;
 
+    private final BodyParamsServiceInterface bodyParamsService;
+
+    private final GymServiceInterface gymService;
+
     private final RoleSpringDataRepository roleRepository;
 
     private final GymSpringDataRepository gymRepository;
@@ -61,6 +68,16 @@ public class AdminController {
         return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
     }
 
+    @Operation(summary = "Find all body parameters")
+    @GetMapping("/all-body-parameters")
+    public ResponseEntity<Object> findAffBodyParameters(){
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("body", bodyParamsService.findAllBodyParameters());
+
+        return new ResponseEntity<>(parameters, HttpStatus.OK);
+    }
+
     @Operation(summary = "Find user by id")
     @GetMapping
     @RequestMapping("/find-user/{id}")
@@ -71,8 +88,14 @@ public class AdminController {
         return new ResponseEntity<>(Collections.singletonMap("result", userRepository.findById(userId)), HttpStatus.OK);
     }
 
+    @Operation(summary = "Find all gyms")
+    @GetMapping("/all-gyms")
+    public ResponseEntity<Object> findAllGyms(@ParameterObject Pageable pageable) {
+        return new ResponseEntity<>(gymService.findAllGyms(pageable), HttpStatus.OK);
+    }
+
     @Operation(summary = "Add new role for User")
-    @PatchMapping("/add-role/{id}&{role}")
+    @PatchMapping("/add-user-role/{id}&{role}")
     @Transactional
     public ResponseEntity<Object> addRoleForUser(@PathVariable("id") String id, @PathVariable("role") String role){
 

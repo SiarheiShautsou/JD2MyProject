@@ -2,11 +2,16 @@ package com.sheva.controller.springdata;
 
 import com.sheva.controller.requests.gym.GymChangeRequest;
 import com.sheva.controller.requests.gym.GymCreateRequest;
+import com.sheva.controller.responses.GymResponse;
 import com.sheva.domain.Gym;
 import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.service.gym.GymServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,13 +37,17 @@ public class GymController {
 
     private final GymSpringDataRepository gymRepository;
 
+    private final GymServiceInterface gymService;
+
     private final ConversionService converter;
 
+    @Operation(summary = "Search gym by name")
+    @GetMapping("/{name}")
+    public ResponseEntity<Object> findGymByGymName(@PathVariable String name) {
 
-    @Operation(summary = "Find all gyms")
-    @GetMapping()
-    public ResponseEntity<Object> findAllGyms() {
-        return new ResponseEntity<>(Collections.singletonMap("result", gymRepository.findAll()), HttpStatus.OK);
+        Gym gym = gymService.findGymByName(name);
+        GymResponse response = converter.convert(gym, GymResponse.class);
+        return new ResponseEntity<>(convertToMap(response), HttpStatus.OK);
     }
 
     @Operation(summary = "Find gym by gym's Id")
@@ -104,5 +113,12 @@ public class GymController {
         model.put("deleted gym", gym);
 
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    private Map<String, Object> convertToMap(Object object) {
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("deleted gym", object);
+        return model;
     }
 }

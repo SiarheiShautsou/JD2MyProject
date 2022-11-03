@@ -1,9 +1,9 @@
-package com.sheva.controller.requests.gym;
+package com.sheva.controller.responses;
 
 import lombok.Data;
 
 @Data
-public class GymCreateRequest {
+public class GymResponse {
 
     private String gymName;
 
@@ -11,10 +11,9 @@ public class GymCreateRequest {
 
     private String city;
 
-    private Integer square;
-
     private String street;
 
     private String building;
 
+    private Integer square;
 }

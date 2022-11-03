@@ -1,6 +1,5 @@
 package com.sheva.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,11 +48,11 @@ public class Gym {
     @Column(name = "modification_date")
     private Timestamp modificationDate;
 
-    @Column(name = "gym_latitude")
-    private Integer gymLatitude;
+    @Column(name = "gym_street")
+    private String gymStreet;
 
-    @Column(name = "gym_longitude")
-    private Integer gymLongitude;
+    @Column(name = "gym_building")
+    private String gymBuilding;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;

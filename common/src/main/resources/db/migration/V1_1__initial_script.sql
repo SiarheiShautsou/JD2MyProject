@@ -32,8 +32,8 @@ create table if not exists gyms
     square            integer      default 100                  not null,
     creation_date     timestamp(6) default CURRENT_TIMESTAMP(6) not null,
     modification_date timestamp(6) default CURRENT_TIMESTAMP(6) not null,
-    gym_latitude      integer,
-    gym_longitude     integer,
+    gym_street      varchar(40),
+    gym_building     varchar(5),
     is_deleted        boolean      default false                not null
 );
 

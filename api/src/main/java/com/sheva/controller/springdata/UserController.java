@@ -52,17 +52,19 @@ public class UserController {
     @Operation(summary = "Search user by name and surname")
     @GetMapping("/with")
     @ResponseStatus(HttpStatus.OK)
-    public ProfileResponse findUserByNameAndSurname(@RequestParam("name") String name, @RequestParam("surname") String surname) {
+    public ResponseEntity<Object> findUserByNameAndSurname(@RequestParam("name") String name, @RequestParam("surname") String surname) {
 
-        User user = userRepository.findUserByUserNameAndUserSurname(name, surname).orElse(null);
+        User user = userService.findUserByNameAndSurname(name, surname);
+        ProfileResponse profile = converter.convert(user, ProfileResponse.class);
 
-        return converter.convert(user, ProfileResponse.class);
+        return new ResponseEntity<>(Collections.singletonMap("result", profile), HttpStatus.OK);
     }
+
 
     @Operation(summary = "Search trainers in city")
     @GetMapping("/search-trainers/{city}")
     @ResponseStatus(HttpStatus.OK)
-    public List<TrainerProfileResponse> searchTrainersByCity(@PathVariable("city") String city) {
+    public ResponseEntity<Object> searchTrainersByCity(@PathVariable("city") String city) {
 
         List<TrainerProfileResponse> result = new ArrayList<>();
         List<User> trainers = userService.findAllTrainersInCity(city);
@@ -70,8 +72,22 @@ public class UserController {
                     TrainerProfileResponse profile = converter.convert(trainer, TrainerProfileResponse.class);
                     result.add(profile);
         }
-        return result;
+        return new ResponseEntity<>(trainers, HttpStatus.OK);
     }
+
+    @Operation(summary = "Search all trainers in gym")
+    @GetMapping("/trainers-in-gym/{gym-name}")
+    public ResponseEntity<Object> searchTrainersByGym(@PathVariable("gym-name") String gymName){
+
+        List<TrainerProfileResponse> result = new ArrayList<>();
+        List<User> trainers = userService.findAllTrainersInGym(gymName);
+        for (User trainer : trainers) {
+            TrainerProfileResponse profile = converter.convert(trainer, TrainerProfileResponse.class);
+            result.add(profile);
+        }
+        return new ResponseEntity<>(trainers, HttpStatus.OK);
+    }
+
 
     @Operation(summary = "Client registration")
     @PostMapping("/create-client")
@@ -121,7 +137,7 @@ public class UserController {
         user.setIsDeleted(true);
         userService.updateUser(user);
 
-        return new ResponseEntity<>(Collections.singletonMap("deleted", userRepository.findById(userId)), HttpStatus.OK);
+        return new ResponseEntity<>(Collections.singletonMap("deleted", userService.findUserById(userId)), HttpStatus.OK);
     }
 
 

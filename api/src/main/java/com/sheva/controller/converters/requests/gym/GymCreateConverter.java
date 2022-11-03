@@ -15,8 +15,8 @@ public class GymCreateConverter extends GymBaseConverter<GymCreateRequest, Gym> 
 
         Gym gym = new Gym();
         gym.setCreationDate(new Timestamp(new Date().getTime()));
-        gym.setGymLatitude(8468464);
-        gym.setGymLongitude(46846468);
+        gym.setGymStreet(source.getStreet());
+        gym.setGymBuilding(source.getBuilding());
 
         return doConvert(gym, source);
     }

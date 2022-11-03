@@ -7,6 +7,7 @@ import com.sheva.domain.UserRole;
 import com.sheva.repository.GymSpringDataRepository;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.repository.UserSpringDataRepository;
+import com.sheva.service.gym.GymServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,8 @@ public class UserService implements UserServiceInterface {
 
     private final GymSpringDataRepository gymRepository;
 
+    private final GymServiceInterface gymService;
+
     public User findUserById(Long id){
 
         Optional<User> user = userRepository.findById(id);
@@ -43,6 +46,21 @@ public class UserService implements UserServiceInterface {
 
     }
 
+    @Override
+    public User findUserByNameAndSurname(String name, String surname){
+
+        User user;
+        Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
+        if(result.isPresent()) {
+            user = result.get();
+        }else {
+            throw new EntityNotFoundException(String.format("User \"%s\" \"%s\" is not found", name, surname));
+        }
+
+        return user;
+    }
+
+    @Override
     public List<User> findAllTrainersInCity(String city){
 
         List<User> cityTrainers = new ArrayList<>();
@@ -57,6 +75,13 @@ public class UserService implements UserServiceInterface {
         return cityTrainers;
     }
 
+    @Override
+    public List<User> findAllTrainersInGym(String gymName){
+        Gym gym = gymService.findGymByName(gymName);
+        return userRepository.findAllByTrainerGym(gym);
+    }
+
+    @Override
     public User findTrainerByNameAndSurname(String name, String surname){
 
         Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
@@ -75,6 +100,7 @@ public class UserService implements UserServiceInterface {
         return trainer;
     }
 
+    @Override
     public User findClientByClientNameAndSurname(String name, String surname){
 
         Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
@@ -93,6 +119,7 @@ public class UserService implements UserServiceInterface {
         return client;
     }
 
+    @Override
     @Transactional
     public User createClientAccount(User user){
 
@@ -103,6 +130,7 @@ public class UserService implements UserServiceInterface {
         return createdUser;
     }
 
+    @Override
     @Transactional
     public User createTrainerAccount(User user, String gymName){
 
@@ -115,6 +143,7 @@ public class UserService implements UserServiceInterface {
         return createdUser;
     }
 
+    @Override
     @Transactional
     public User updateUser(User user){
         userRepository.save(user);
@@ -123,7 +152,14 @@ public class UserService implements UserServiceInterface {
 
     private User setGymForTrainer(User user, String gymName){
 
-        Gym gym = gymRepository.findGymByGymName(gymName).get();
+        Gym gym;
+        Optional<Gym> result = gymRepository.findGymByGymName(gymName);
+        if (result.isPresent()){
+            gym = result.get();
+        }else{
+            throw new EntityNotFoundException(String.format("Gym \"%s\" is not found", gymName));
+        }
+
         user.setTrainerGym(gym);
         Set<User> trainers = gym.getTrainers();
 
