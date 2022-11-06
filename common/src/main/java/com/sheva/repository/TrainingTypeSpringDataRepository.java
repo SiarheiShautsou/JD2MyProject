@@ -14,7 +14,7 @@ public interface TrainingTypeSpringDataRepository extends JpaRepository<Training
 
     @Cacheable("training types")
     @Query(value = "select t from TrainingType t")
-    List<TrainingType> findAllCustomQuery();
+    List<TrainingType> findAllTrainingTypesInCache();
 
     Optional<TrainingType> findByTrainingTypeName(String trainingTypeName);
 }

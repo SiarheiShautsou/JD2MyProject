@@ -1,4 +1,4 @@
-package com.sheva.service.body;
+package com.sheva.service.body_parameters;
 
 import com.sheva.domain.BodyParameters;
 import com.sheva.domain.User;

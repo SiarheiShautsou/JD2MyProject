@@ -4,10 +4,6 @@ import com.sheva.controller.requests.AuthRequest;
 import com.sheva.controller.responses.AuthResponse;
 import com.sheva.security.jwt.JwtTokenHelper;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +30,6 @@ public class AuthenticationController {
     private final UserDetailsService userDetailsService;
 
     @Operation(summary = "Login user in system")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful authorization"),
-            @ApiResponse(responseCode = "400", description = "Request error"),
-            @ApiResponse(responseCode = "500", description = "Server error"),})
     @PostMapping
     public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthRequest request) {
 

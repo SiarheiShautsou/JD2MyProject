@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class BodyParamsConverter implements Converter<BodyParamCreateRequest, BodyParameters> {
@@ -26,7 +29,7 @@ public class BodyParamsConverter implements Converter<BodyParamCreateRequest, Bo
         bodyParameter.setBust(source.getBust());
         bodyParameter.setWaist(source.getWaist());
         bodyParameter.setHip(source.getHip());
-        bodyParameter.setCreationDate(source.getCreationDate());
+        bodyParameter.setCreationDate(new Timestamp(new Date().getTime()));
 
         return bodyParameter;
     }

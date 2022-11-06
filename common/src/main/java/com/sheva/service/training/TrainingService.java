@@ -1,7 +1,9 @@
 package com.sheva.service.training;
 
+import com.sheva.domain.Subscription;
 import com.sheva.domain.Training;
 import com.sheva.repository.TrainingSpringDataRepository;
+import com.sheva.service.subscription.SubscriptionServiceInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.swing.plaf.SpinnerUI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +20,13 @@ public class TrainingService implements TrainingServiceInterface{
 
     private final TrainingSpringDataRepository trainingRepository;
 
+    private final SubscriptionServiceInterface subscriptionService;
+
     @Override
     public Training findTrainingById(Long id) {
 
         Optional<Training> result = trainingRepository.findTrainingById(id);
-        Training training = new Training();
+        Training training;
         if (result.isPresent()) {
             training = result.get();
         }else {
@@ -50,6 +52,20 @@ public class TrainingService implements TrainingServiceInterface{
     @Transactional
     public Training createTraining(Training training) {
 
+        Subscription subscription = subscriptionService.findUserValidSubscription(training.getClient(),
+                training.getTrainer().getTrainerGym());
+
+        if(subscription.getValidTo().after(training.getTrainingDate())) {
+            final int trainingCount = 1;
+            if (Boolean.FALSE.equals(subscription.getIsUnlimited())) {
+                int userTrainingsCount = subscription.getTrainingsCount();
+                int updatedTrainingsCount = userTrainingsCount - trainingCount;
+                subscription.setTrainingsCount(updatedTrainingsCount);
+                subscriptionService.createSubscription(subscription);
+            }
+        }else {
+            throw new IllegalArgumentException("Training day must be before subscription's expiration date.");
+        }
         return trainingRepository.save(training);
     }
 
@@ -57,8 +73,17 @@ public class TrainingService implements TrainingServiceInterface{
     @Transactional
     public Training updateTraining(Training training) {
 
-        trainingRepository.flush();
-        return training;
+        Training trainingBeforeUpdate = findTrainingById(training.getId());
+        Training trainingAfterUpdate;
+
+        if(training.getClient().getUserName().equals(trainingBeforeUpdate.getClient().getUserName()) &&
+        training.getClient().getUserSurname().equals(trainingBeforeUpdate.getClient().getUserSurname())){
+            trainingAfterUpdate = trainingRepository.save(training);
+        }else{
+            trainingAfterUpdate = createTraining(training);
+        }
+
+        return trainingAfterUpdate;
     }
 
     @Override
@@ -75,4 +100,5 @@ public class TrainingService implements TrainingServiceInterface{
         return training;
 
     }
+
 }

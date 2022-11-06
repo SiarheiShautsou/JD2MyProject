@@ -5,6 +5,8 @@ import com.sheva.controller.requests.user.UserCreateRequest;
 import com.sheva.domain.User;
 import com.sheva.domain.UserCredentials;
 import com.sheva.domain.UserLocation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -12,7 +14,10 @@ import java.util.Date;
 
 
 @Component
+@RequiredArgsConstructor
 public class UserCreateRequestConverter extends UserBaseConverter<UserCreateRequest, User> {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User convert(UserCreateRequest source) {
@@ -30,7 +35,7 @@ public class UserCreateRequestConverter extends UserBaseConverter<UserCreateRequ
 
         UserCredentials credentials = new UserCredentials();
         credentials.setUserLogin(source.getUserLogin());
-        credentials.setUserPassword(source.getUserPassword());
+        credentials.setUserPassword(passwordEncoder.encode(source.getUserPassword()));
         credentials.setUserEmail(source.getUserEmail());
         credentials.setMobileNumber(source.getUserMobileNumber());
 

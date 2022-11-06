@@ -1,10 +1,10 @@
-package com.sheva.controller.springdata;
+package com.sheva.controller;
 
 import com.sheva.controller.requests.BodyParamCreateRequest;
 import com.sheva.controller.responses.BodyParametersResponse;
 import com.sheva.domain.BodyParameters;
 import com.sheva.domain.User;
-import com.sheva.service.body.BodyParamsServiceInterface;
+import com.sheva.service.body_parameters.BodyParamsServiceInterface;
 import com.sheva.service.user.UserServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -80,6 +80,7 @@ public class BodyParametersController {
 
     @Operation(summary = "Delete body parameters")
     @DeleteMapping("delete/{id}")
+    @Transactional
     public ResponseEntity<Object> deleteBodyParameters(@PathVariable String id) {
 
         Long bodyParamId = Long.parseLong(id);

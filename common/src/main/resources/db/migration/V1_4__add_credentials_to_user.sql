@@ -2,7 +2,7 @@ alter table users
     add if not exists user_login varchar(20);
 
 alter table users
-    add if not exists user_password varchar(30);
+    add if not exists user_password varchar(100);
 
 alter table users
     add if not exists email varchar(100);

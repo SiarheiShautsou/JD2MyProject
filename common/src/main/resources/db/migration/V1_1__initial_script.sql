@@ -64,9 +64,7 @@ create table if not exists l_trainings
         constraint l_trainings_clients_id_fk
             references users (id)
             on update cascade on delete cascade,
-    training_date     timestamp(6)                                                                          not null
-        constraint l_trainings_pk
-            primary key,
+    training_date     timestamp(6)                                                                          not null,
     creation_date     timestamp(6) default CURRENT_TIMESTAMP(6),
     modification_date timestamp(6) default CURRENT_TIMESTAMP(6),
     training_type_id  integer
@@ -171,7 +169,7 @@ create table if not exists user_credentials
         constraint user_credentials_users_id_fk
             references users (id),
     user_login        varchar(20)                               not null,
-    user_password     varchar(30)                               not null,
+    user_password     varchar(100)                              not null,
     user_email        varchar(100)                              not null,
     creation_date     timestamp(6) default CURRENT_TIMESTAMP(6) not null,
     modification_date timestamp(6) default CURRENT_TIMESTAMP(6) not null

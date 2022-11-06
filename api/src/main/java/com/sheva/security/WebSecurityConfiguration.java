@@ -16,12 +16,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import javax.persistence.Column;
 
 @RequiredArgsConstructor
 @Configuration
@@ -78,7 +74,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/data/user/**").permitAll()
                 .antMatchers("/data/roles/**").permitAll()
                 .antMatchers("/data/gyms/**").permitAll()
-                .antMatchers("/data/types/**").permitAll()
+                .antMatchers("/data/training_types/**").permitAll()
                 .antMatchers("/data/trainings/**").permitAll()
                 .antMatchers("/data/subscription/**").permitAll()
                 .antMatchers("/body-params/**").permitAll()

@@ -11,4 +11,5 @@ import java.util.List;
 public interface BodyParamSpringDataRepository extends JpaRepository<BodyParameters, Long> {
 
     List<BodyParameters> findAllByUser(User user);
+
 }

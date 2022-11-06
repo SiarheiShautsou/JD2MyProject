@@ -1,4 +1,4 @@
-package com.sheva.controller.springdata;
+package com.sheva.controller;
 
 import com.sheva.controller.requests.user.TrainerCreateRequest;
 import com.sheva.controller.requests.user.UserChangeRequest;
@@ -6,9 +6,6 @@ import com.sheva.controller.requests.user.UserCreateRequest;
 import com.sheva.controller.responses.ProfileResponse;
 import com.sheva.controller.responses.TrainerProfileResponse;
 import com.sheva.domain.User;
-import com.sheva.repository.GymSpringDataRepository;
-import com.sheva.repository.RoleSpringDataRepository;
-import com.sheva.repository.UserSpringDataRepository;
 import com.sheva.service.user.UserServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +36,6 @@ import java.util.Map;
 @RequestMapping("/data/user")
 public class UserController {
 
-    private final UserSpringDataRepository userRepository;
-
-    private final RoleSpringDataRepository roleRepository;
-
-    private final GymSpringDataRepository gymRepository;
-
     private final UserServiceInterface userService;
 
     private final ConversionService converter;
@@ -63,21 +54,20 @@ public class UserController {
 
     @Operation(summary = "Search trainers in city")
     @GetMapping("/search-trainers/{city}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> searchTrainersByCity(@PathVariable("city") String city) {
 
         List<TrainerProfileResponse> result = new ArrayList<>();
         List<User> trainers = userService.findAllTrainersInCity(city);
         for (User trainer : trainers) {
-                    TrainerProfileResponse profile = converter.convert(trainer, TrainerProfileResponse.class);
-                    result.add(profile);
+            TrainerProfileResponse profile = converter.convert(trainer, TrainerProfileResponse.class);
+            result.add(profile);
         }
-        return new ResponseEntity<>(trainers, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Operation(summary = "Search all trainers in gym")
     @GetMapping("/trainers-in-gym/{gym-name}")
-    public ResponseEntity<Object> searchTrainersByGym(@PathVariable("gym-name") String gymName){
+    public ResponseEntity<Object> searchTrainersByGym(@PathVariable("gym-name") String gymName) {
 
         List<TrainerProfileResponse> result = new ArrayList<>();
         List<User> trainers = userService.findAllTrainersInGym(gymName);
@@ -85,12 +75,13 @@ public class UserController {
             TrainerProfileResponse profile = converter.convert(trainer, TrainerProfileResponse.class);
             result.add(profile);
         }
-        return new ResponseEntity<>(trainers, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
     @Operation(summary = "Client registration")
     @PostMapping("/create-client")
+    @Transactional
     public ResponseEntity<Object> createClient(@RequestBody UserCreateRequest createRequest) {
 
         User client = converter.convert(createRequest, User.class);
@@ -118,7 +109,7 @@ public class UserController {
     @Operation(summary = "Update user")
     @PutMapping("/update")
     @Transactional
-    public ResponseEntity<Object> changeUserInfo(@RequestBody UserChangeRequest changeRequest){
+    public ResponseEntity<Object> changeUserInfo(@RequestBody UserChangeRequest changeRequest) {
 
         User user = converter.convert(changeRequest, User.class);
 
@@ -130,6 +121,7 @@ public class UserController {
 
     @Operation(summary = "Delete user")
     @PatchMapping("/deleteAccount/{id}")
+    @Transactional
     public ResponseEntity<Object> getUserIdDeletedStatus(@PathVariable String id) {
 
         Long userId = Long.parseLong(id);

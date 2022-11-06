@@ -18,6 +18,18 @@ public class GymService implements GymServiceInterface{
     private final GymSpringDataRepository gymRepository;
 
     @Override
+    public Gym findGymById(Integer id) {
+        Optional<Gym> result = gymRepository.findById(id);
+        Gym gym;
+        if (result.isPresent()){
+            gym = result.get();
+        }else{
+            throw new EntityNotFoundException(String.format("Gym with this id %d not found", id));
+        }
+        return gym;
+    }
+
+    @Override
     public Page<Gym> findAllGyms(Pageable pageable) {
         return gymRepository.findAll(pageable);
     }
@@ -34,5 +46,18 @@ public class GymService implements GymServiceInterface{
                     String.format("Gym \"%s\" is not found", name)));
         }
          return gym;
+    }
+
+    @Override
+    public Gym createNewGym(Gym gym) {
+
+        return gymRepository.save(gym);
+    }
+
+    @Override
+    public Gym deleteGym(Gym gym) {
+
+        gymRepository.delete(gym);
+        return gym;
     }
 }
