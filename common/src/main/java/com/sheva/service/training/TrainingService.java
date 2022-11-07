@@ -2,21 +2,22 @@ package com.sheva.service.training;
 
 import com.sheva.domain.Subscription;
 import com.sheva.domain.Training;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.TrainingSpringDataRepository;
 import com.sheva.service.subscription.SubscriptionServiceInterface;
+import com.sheva.util.UUIDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TrainingService implements TrainingServiceInterface{
+public class TrainingService implements TrainingServiceInterface {
 
     private final TrainingSpringDataRepository trainingRepository;
 
@@ -29,21 +30,22 @@ public class TrainingService implements TrainingServiceInterface{
         Training training;
         if (result.isPresent()) {
             training = result.get();
-        }else {
-            throw new EntityNotFoundException(String.format("Training with id %d not found", id));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Training with id %d not found", id)), 404, UUIDGenerator.generateUUID());
         }
 
         return training;
     }
 
     @Override
-    public Page<Training> findAllTrainings(){
+    public Page<Training> findAllTrainings() {
 
         return trainingRepository.findAll(PageRequest.of(0, 10));
     }
 
     @Override
-    public List<Training> findAllClientTrainings(String clientName, String clientSurname){
+    public List<Training> findAllClientTrainings(String clientName, String clientSurname) {
 
         return trainingRepository.findAllByClientUserNameAndClientUserSurname(clientName, clientSurname);
     }
@@ -55,7 +57,7 @@ public class TrainingService implements TrainingServiceInterface{
         Subscription subscription = subscriptionService.findUserValidSubscription(training.getClient(),
                 training.getTrainer().getTrainerGym());
 
-        if(subscription.getValidTo().after(training.getTrainingDate())) {
+        if (subscription.getValidTo().after(training.getTrainingDate())) {
             final int trainingCount = 1;
             if (Boolean.FALSE.equals(subscription.getIsUnlimited())) {
                 int userTrainingsCount = subscription.getTrainingsCount();
@@ -63,7 +65,7 @@ public class TrainingService implements TrainingServiceInterface{
                 subscription.setTrainingsCount(updatedTrainingsCount);
                 subscriptionService.createSubscription(subscription);
             }
-        }else {
+        } else {
             throw new IllegalArgumentException("Training day must be before subscription's expiration date.");
         }
         return trainingRepository.save(training);
@@ -76,10 +78,10 @@ public class TrainingService implements TrainingServiceInterface{
         Training trainingBeforeUpdate = findTrainingById(training.getId());
         Training trainingAfterUpdate;
 
-        if(training.getClient().getUserName().equals(trainingBeforeUpdate.getClient().getUserName()) &&
-        training.getClient().getUserSurname().equals(trainingBeforeUpdate.getClient().getUserSurname())){
+        if (training.getClient().getUserName().equals(trainingBeforeUpdate.getClient().getUserName()) &&
+                training.getClient().getUserSurname().equals(trainingBeforeUpdate.getClient().getUserSurname())) {
             trainingAfterUpdate = trainingRepository.save(training);
-        }else{
+        } else {
             trainingAfterUpdate = createTraining(training);
         }
 

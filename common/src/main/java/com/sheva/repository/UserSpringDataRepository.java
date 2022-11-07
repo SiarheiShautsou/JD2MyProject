@@ -26,7 +26,6 @@ public interface UserSpringDataRepository extends JpaRepository<User, Long> {
 
     Optional<User> findUserByUserNameAndUserSurname(String name, String surname);
 
-//    @Query(value = "select u from User u inner join UserRole r where r.roleName like ")
     List<User> findAllByLocationCity(String city);
 
     List<User> findAllByTrainerGym(Gym gym);

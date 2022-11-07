@@ -1,6 +1,9 @@
 package com.sheva.exception;
 
-public class NonSuchEntityException extends RuntimeException{
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+public class NonSuchEntityException extends RuntimeException {
 
     private String exceptionMessage;
 
@@ -44,10 +47,6 @@ public class NonSuchEntityException extends RuntimeException{
 
     @Override
     public String toString() {
-        return "NonSuchEntityException{" +
-                "exceptionMessage='" + exceptionMessage + '\'' +
-                ", errorCode=" + errorCode +
-                ", exceptionId='" + exceptionId + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 }

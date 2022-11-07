@@ -3,12 +3,13 @@ package com.sheva.controller;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.domain.UserRole;
-import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.repository.SubscriptionSpringDataRepository;
 import com.sheva.repository.UserSpringDataRepository;
 import com.sheva.service.body_parameters.BodyParamsServiceInterface;
 import com.sheva.service.gym.GymServiceInterface;
+import com.sheva.util.UUIDGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -47,7 +49,6 @@ public class AdminController {
 
     private final RoleSpringDataRepository roleRepository;
 
-    private final GymSpringDataRepository gymRepository;
 
     private final SubscriptionSpringDataRepository subscriptionRepository;
 
@@ -70,7 +71,7 @@ public class AdminController {
     @Operation(summary = "Find all body parameters")
     @Parameter(in = ParameterIn.HEADER, name = "X-Auth-Token", required = true)
     @GetMapping("/all-body-parameters")
-    public ResponseEntity<Object> findAffBodyParameters(){
+    public ResponseEntity<Object> findAffBodyParameters() {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("body", bodyParamsService.findAllBodyParameters());
@@ -89,7 +90,7 @@ public class AdminController {
             name = "sort",
             array = @ArraySchema(schema = @Schema(type = "string")))
     @GetMapping("/all-subscriptions")
-    public ResponseEntity<Object> findAllSubscriptions(Pageable pageable){
+    public ResponseEntity<Object> findAllSubscriptions(Pageable pageable) {
 
         return new ResponseEntity<>(subscriptionRepository.findAll(pageable), HttpStatus.OK);
     }
@@ -124,20 +125,27 @@ public class AdminController {
     @Parameter(in = ParameterIn.HEADER, name = "X-Auth-Token", required = true)
     @PatchMapping("/add-user-role/{id}&{role}")
     @Transactional
-    public ResponseEntity<Object> addRoleForUser(@PathVariable("id") String id, @PathVariable("role") String role){
+    public ResponseEntity<Object> addRoleForUser(@PathVariable("id") String id, @PathVariable("role") String role) {
 
         Long userId = Long.parseLong(id);
-        User user = userRepository.findById(userId).orElse(null);
-        assert user != null;
+        Optional<User> result = userRepository.findById(userId);
+        User user;
+        if (result.isPresent()) {
+            user = result.get();
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("User %s not found", userId)), 404, UUIDGenerator.generateUUID());
+        }
+
         Set<UserRole> roles = user.getRoles();
         UserRole userRole = roleRepository.findByRoleName(SystemRoles.valueOf(role));
         roles.add(userRole);
-        userRepository.flush();
+        User userWithNewRole = userRepository.save(user);
 
         userRepository.createRoleRow(userRole.getId(), user.getId(),
                 new Timestamp(new Date().getTime()), new Timestamp(new Date().getTime()));
 
-        return new ResponseEntity<>(Collections.singletonMap("user" , user), HttpStatus.OK);
+        return new ResponseEntity<>(Collections.singletonMap("user", userWithNewRole), HttpStatus.OK);
     }
 
     @Operation(summary = "Delete user forever")

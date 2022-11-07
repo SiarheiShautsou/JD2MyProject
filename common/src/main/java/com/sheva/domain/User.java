@@ -9,8 +9,6 @@ import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -27,15 +25,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
 @Entity
 @EqualsAndHashCode(exclude = {"roles", "bodyParameters", "clientTrainings", "trainerTrainings",
-"subscriptions", "trainerGym"})
+        "subscriptions", "trainerGym"})
 @ToString(exclude = {"roles", "bodyParameters", "clientTrainings", "trainerTrainings",
         "subscriptions", "trainerGym"})
 @Table(name = "users")
@@ -45,13 +41,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(min = 2, max = 20)
     @Column(name = "user_name")
     private String userName;
 
-    @NotBlank
-    @Size(min = 2, max = 30)
     @Column(name = "user_surname")
     private String userSurname;
 
@@ -75,30 +67,30 @@ public class User {
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
-    private Gender gender =Gender.NOT_SELECTED;
+    private Gender gender = Gender.NOT_SELECTED;
 
     @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonIgnoreProperties("users")
     private Set<UserRole> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<BodyParameters> bodyParameters;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Subscription> subscriptions;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Training> clientTrainings;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Training> trainerTrainings;
 

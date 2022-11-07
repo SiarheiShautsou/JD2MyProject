@@ -1,6 +1,5 @@
 package com.sheva.controller.converters.requests.user;
 
-import com.sheva.controller.converters.requests.user.UserBaseConverter;
 import com.sheva.controller.requests.user.UserChangeRequest;
 import com.sheva.domain.User;
 import com.sheva.service.user.UserService;

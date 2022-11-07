@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface TrainingSpringDataRepository extends JpaRepository<Training, Long> {
 
     Optional<Training> findTrainingById(Long id);
+
     List<Training> findAllByClientUserNameAndClientUserSurname(String userName, String userSurname);
 }

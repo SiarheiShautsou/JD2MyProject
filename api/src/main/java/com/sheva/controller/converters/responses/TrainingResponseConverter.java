@@ -10,7 +10,7 @@ public class TrainingResponseConverter implements Converter<Training, TrainingRe
     @Override
     public TrainingResponse convert(Training source) {
 
-        TrainingResponse response= new TrainingResponse();
+        TrainingResponse response = new TrainingResponse();
         response.setTrainerName(source.getTrainer().getUserName());
         response.setTrainerSurname(source.getTrainer().getUserSurname());
         response.setTrainingDate(source.getTrainingDate());

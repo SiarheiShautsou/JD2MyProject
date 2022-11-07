@@ -3,21 +3,21 @@ package com.sheva.service.subscription;
 import com.sheva.domain.Gym;
 import com.sheva.domain.Subscription;
 import com.sheva.domain.User;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.SubscriptionSpringDataRepository;
 import com.sheva.service.user.UserServiceInterface;
+import com.sheva.util.UUIDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SubscriptionService implements SubscriptionServiceInterface{
+public class SubscriptionService implements SubscriptionServiceInterface {
 
     private final SubscriptionSpringDataRepository subscriptionRepository;
 
@@ -31,8 +31,9 @@ public class SubscriptionService implements SubscriptionServiceInterface{
 
         if (result.isPresent()) {
             subscription = result.get();
-        }else {
-            throw new EntityNotFoundException(String.format("Subscription with id %s not found", id));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Subscription with id %s not found", id)), 404, UUIDGenerator.generateUUID());
         }
 
         return subscription;
@@ -64,16 +65,19 @@ public class SubscriptionService implements SubscriptionServiceInterface{
         List<Subscription> allUserSubscriptions = findAllUserSubscriptions(user);
         Subscription validSubscription = null;
         for (Subscription subscription : allUserSubscriptions) {
-            if(subscription.getGym().equals(gym) && Boolean.TRUE.equals(checkSubscriptionTimeValid(subscription))) {
+            if (subscription.getGym().equals(gym) && Boolean.TRUE.equals(checkSubscriptionTimeValid(subscription))) {
                 if (Boolean.TRUE.equals(subscription.getIsUnlimited()) || subscription.getTrainingsCount() > 0) {
                     validSubscription = subscription;
-                }else {
-                    throw new EntityNotFoundException(String.format("Training count of subscription = %d", subscription.getTrainingsCount()));
+                } else {
+                    throw new NonSuchEntityException(
+                            (String.format("Training count of subscription = %d", subscription.getTrainingsCount())),
+                            404, UUIDGenerator.generateUUID());
                 }
             }
         }
-        if(validSubscription == null){
-            throw new EntityNotFoundException(String.format("Valid subscriptions for %s are not found.", gym.getGymName()));
+        if (validSubscription == null) {
+            throw new NonSuchEntityException(
+                    (String.format("Valid subscriptions for %s are not found.", gym.getGymName())), 404, UUIDGenerator.generateUUID());
         }
         return validSubscription;
     }

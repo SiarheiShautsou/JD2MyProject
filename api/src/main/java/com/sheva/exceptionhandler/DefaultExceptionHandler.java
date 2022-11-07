@@ -21,7 +21,6 @@ public class DefaultExceptionHandler {
         ErrorContainer error = ErrorContainer
                 .builder()
                 .exceptionID(UUIDGenerator.generateUUID())
-                .errorCode(2)
                 .errorMessage(e.getMessage())
                 .e(e.getClass().toString())
                 .build();
@@ -35,7 +34,6 @@ public class DefaultExceptionHandler {
         ErrorContainer error = ErrorContainer
                 .builder()
                 .exceptionID(UUIDGenerator.generateUUID())
-                .errorCode(2)
                 .errorMessage(e.getMessage())
                 .e(e.getClass().toString())
                 .build();
@@ -49,7 +47,6 @@ public class DefaultExceptionHandler {
         ErrorContainer error = ErrorContainer
                 .builder()
                 .exceptionID(UUIDGenerator.generateUUID())
-                .errorCode(3)
                 .errorMessage(e.getMessage())
                 .e(e.getClass().toString())
                 .build();

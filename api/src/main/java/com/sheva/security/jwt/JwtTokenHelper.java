@@ -33,13 +33,15 @@ public class JwtTokenHelper {
 
     private final JwtSecurityConfig jwtSecurityConfig;
 
-    private String generateToken(Map<String, Object> claims){
+    private String generateToken(Map<String, Object> claims) {
 
-        return Jwts.builder().setHeader(generateJWTHeaders()).setClaims(claims).setExpiration(generateExpirationDate())
+        return Jwts.builder().setHeader(generateJWTHeaders())
+                .setClaims(claims)
+                .setExpiration(generateExpirationDate())
                 .signWith(ALGORITHM, jwtSecurityConfig.getSecret()).compact();
     }
 
-    private Map<String, Object> generateJWTHeaders(){
+    private Map<String, Object> generateJWTHeaders() {
 
         Map<String, Object> jwtHeaders = new LinkedHashMap<>();
         jwtHeaders.put("typ", JWT);
@@ -69,12 +71,12 @@ public class JwtTokenHelper {
 
     }
 
-    private Date generateCurrentDate(){
+    private Date generateCurrentDate() {
 
         return new Date();
     }
 
-    private Date generateExpirationDate(){
+    private Date generateExpirationDate() {
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MILLISECOND, jwtSecurityConfig.getExpiration());
@@ -82,19 +84,19 @@ public class JwtTokenHelper {
         return calendar.getTime();
     }
 
-    private Boolean isTokenExpired(String token){
+    private Boolean isTokenExpired(String token) {
 
         final Date expiration = this.getExpirationDateFromToken(token);
         return expiration.before(this.generateCurrentDate());
 
     }
 
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset){
+    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
 
         return (lastPasswordReset != null && created.before(lastPasswordReset));
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put(SUBJECT, userDetails.getUsername());
@@ -103,9 +105,9 @@ public class JwtTokenHelper {
         return generateToken(claims);
     }
 
-    private List<String> getEncryptedRoles(UserDetails userDetails){
+    private List<String> getEncryptedRoles(UserDetails userDetails) {
         return userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .map(s->s.replace("ROLE_", ""))
+                .map(s -> s.replace("ROLE_", ""))
                 .map(String::toLowerCase).collect(Collectors.toList());
 
     }
@@ -132,7 +134,6 @@ public class JwtTokenHelper {
         final String username = getUsernameFromToken(token);
         return username.equals(userDetails.getUsername());
     }
-
 
 
 }

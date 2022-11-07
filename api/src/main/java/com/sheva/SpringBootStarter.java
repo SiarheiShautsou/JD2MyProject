@@ -10,7 +10,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication(scanBasePackages = "com.sheva")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableCaching
-@OpenAPIDefinition(info = @Info(title = "JasyPro", version = "1.0.0", description = "Training center"))
+@OpenAPIDefinition(info = @Info(title = "JasyProTrainings", version = "1.0.0", description = "Training center"))
 public class SpringBootStarter {
 
     public static void main(String[] args) {

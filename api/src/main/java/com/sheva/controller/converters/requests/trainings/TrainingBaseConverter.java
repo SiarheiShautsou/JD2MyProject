@@ -3,13 +3,14 @@ package com.sheva.controller.converters.requests.trainings;
 import com.sheva.controller.requests.trainings.TrainingCreateRequest;
 import com.sheva.domain.Training;
 import com.sheva.domain.TrainingType;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.TrainingTypeSpringDataRepository;
 import com.sheva.service.user.UserServiceInterface;
+import com.sheva.util.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 
-import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
@@ -38,12 +39,13 @@ public abstract class TrainingBaseConverter<S, T> implements Converter<S, T> {
         training.setModificationDate(new Timestamp(new Date().getTime()));
 
         Optional<TrainingType> result = trainingTypeRepository.findByTrainingTypeName(source.getTrainingTypeName());
-        TrainingType trainingType = new TrainingType();
+        TrainingType trainingType;
 
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             trainingType = result.get();
-        }else {
-            throw new EntityNotFoundException(String.format("Training type %s isn't found", source.getTrainingTypeName()));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Training type %s isn't found", source.getTrainingTypeName())), 404, UUIDGenerator.generateUUID());
         }
 
         training.setTrainingType(trainingType);

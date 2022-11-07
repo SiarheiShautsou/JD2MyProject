@@ -1,9 +1,7 @@
 package com.sheva.controller.converters.responses;
 
-import com.sheva.controller.responses.ProfileResponse;
 import com.sheva.controller.responses.TrainerProfileResponse;
 import com.sheva.domain.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

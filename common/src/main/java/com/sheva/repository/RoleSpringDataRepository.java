@@ -1,7 +1,7 @@
 package com.sheva.repository;
 
-import com.sheva.domain.UserRole;
 import com.sheva.domain.SystemRoles;
+import com.sheva.domain.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,10 @@
 package com.sheva.controller;
 
 import com.sheva.domain.UserRole;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.util.MapGenerator;
+import com.sheva.util.UUIDGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -59,7 +60,8 @@ public class RoleController {
         if (result.isPresent()) {
             role = result.get();
         } else {
-            throw new EntityNotFoundException(String.format("Role with id %s not found", roleId));
+            throw new NonSuchEntityException(
+                    (String.format("Role with id %s not found", roleId)), 404, UUIDGenerator.generateUUID());
         }
         return role;
     }

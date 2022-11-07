@@ -1,8 +1,8 @@
 package com.sheva.security;
 
-import com.sheva.domain.UserRole;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
+import com.sheva.domain.UserRole;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.repository.UserSpringDataRepository;
 import lombok.RequiredArgsConstructor;

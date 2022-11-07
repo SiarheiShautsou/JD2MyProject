@@ -1,19 +1,19 @@
 package com.sheva.service.gym;
 
 import com.sheva.domain.Gym;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.GymSpringDataRepository;
+import com.sheva.util.UUIDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class GymService implements GymServiceInterface{
+public class GymService implements GymServiceInterface {
 
     private final GymSpringDataRepository gymRepository;
 
@@ -21,10 +21,11 @@ public class GymService implements GymServiceInterface{
     public Gym findGymById(Integer id) {
         Optional<Gym> result = gymRepository.findById(id);
         Gym gym;
-        if (result.isPresent()){
+        if (result.isPresent()) {
             gym = result.get();
-        }else{
-            throw new EntityNotFoundException(String.format("Gym with this id %d not found", id));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Gym with this id %d not found", id)), 404, UUIDGenerator.generateUUID());
         }
         return gym;
     }
@@ -41,11 +42,11 @@ public class GymService implements GymServiceInterface{
         Gym gym;
         if (result.isPresent()) {
             gym = result.get();
-        }else {
-            throw new EntityNotFoundException(String.format(
-                    String.format("Gym \"%s\" is not found", name)));
+        } else {
+            throw new NonSuchEntityException(String.format(
+                    String.format("Gym \"%s\" is not found", name)), 404, UUIDGenerator.generateUUID());
         }
-         return gym;
+        return gym;
     }
 
     @Override

@@ -58,12 +58,12 @@ public class Gym {
     private Boolean isDeleted;
 
     @OneToMany(mappedBy = "trainerGym", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<User> trainers;
 
     @OneToMany(mappedBy = "gym", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Fetch(value= FetchMode.SELECT)
+    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Subscription> subscriptions;
 

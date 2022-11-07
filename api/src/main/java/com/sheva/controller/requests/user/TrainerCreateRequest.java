@@ -1,6 +1,5 @@
 package com.sheva.controller.requests.user;
 
-import com.sheva.controller.requests.user.UserCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

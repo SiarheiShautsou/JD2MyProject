@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserServiceInterface {
 
-    public User findUserById(Long id);
+    User findUserById(Long id);
 
     List<User> findAllTrainersInCity(String city);
 

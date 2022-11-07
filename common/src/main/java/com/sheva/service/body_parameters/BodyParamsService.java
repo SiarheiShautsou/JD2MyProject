@@ -2,11 +2,12 @@ package com.sheva.service.body_parameters;
 
 import com.sheva.domain.BodyParameters;
 import com.sheva.domain.User;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.BodyParamSpringDataRepository;
+import com.sheva.util.UUIDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +24,11 @@ public class BodyParamsService implements BodyParamsServiceInterface {
 
         Optional<BodyParameters> result = bodyParamRepository.findById(id);
         BodyParameters bodyParameters;
-        if(result.isPresent()){
+        if (result.isPresent()) {
             bodyParameters = result.get();
-        }else{
-            throw new EntityNotFoundException(
-                    String.format("Body parameters with this id \"%s\" is not found", id));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Body parameters with this id \"%s\" is not found", id)), 404, UUIDGenerator.generateUUID());
         }
         return bodyParameters;
     }

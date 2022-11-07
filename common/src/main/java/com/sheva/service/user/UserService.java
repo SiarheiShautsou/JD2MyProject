@@ -4,16 +4,17 @@ import com.sheva.domain.Gym;
 import com.sheva.domain.SystemRoles;
 import com.sheva.domain.User;
 import com.sheva.domain.UserRole;
+import com.sheva.exception.NonSuchEntityException;
 import com.sheva.repository.GymSpringDataRepository;
 import com.sheva.repository.RoleSpringDataRepository;
 import com.sheva.repository.UserSpringDataRepository;
 import com.sheva.service.gym.GymServiceInterface;
+import com.sheva.util.UUIDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,40 +35,41 @@ public class UserService implements UserServiceInterface {
 
     private final GymServiceInterface gymService;
 
-    public User findUserById(Long id){
+    public User findUserById(Long id) {
 
         Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             return user.get();
-        }else{
-            throw new EntityNotFoundException(
-                    String.format("User with this id \"%s\" is not found", id));
+        } else {
+            throw new NonSuchEntityException(
+                    String.format("User with this id \"%s\" is not found", id), 404, UUIDGenerator.generateUUID());
         }
 
     }
 
     @Override
-    public User findUserByNameAndSurname(String name, String surname){
+    public User findUserByNameAndSurname(String name, String surname) {
 
         User user;
         Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             user = result.get();
-        }else {
-            throw new EntityNotFoundException(String.format("User \"%s\" \"%s\" is not found", name, surname));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("User \"%s\" \"%s\" is not found", name, surname)), 404, UUIDGenerator.generateUUID());
         }
 
         return user;
     }
 
     @Override
-    public List<User> findAllTrainersInCity(String city){
+    public List<User> findAllTrainersInCity(String city) {
 
         List<User> cityTrainers = new ArrayList<>();
         List<User> trainers = userRepository.findAllByLocationCity(city);
         for (User trainer : trainers) {
             for (UserRole role : trainer.getRoles()) {
-                if(role.getRoleName() == SystemRoles.ROLE_TRAINER){
+                if (role.getRoleName() == SystemRoles.ROLE_TRAINER) {
                     cityTrainers.add(trainer);
                 }
             }
@@ -76,24 +78,24 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<User> findAllTrainersInGym(String gymName){
+    public List<User> findAllTrainersInGym(String gymName) {
         Gym gym = gymService.findGymByName(gymName);
         return userRepository.findAllByTrainerGym(gym);
     }
 
     @Override
-    public User findTrainerByNameAndSurname(String name, String surname){
+    public User findTrainerByNameAndSurname(String name, String surname) {
 
         Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
         User trainer = new User();
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             User user = result.get();
             for (UserRole role : user.getRoles()) {
-                if(role.getRoleName() == SystemRoles.ROLE_TRAINER) {
+                if (role.getRoleName() == SystemRoles.ROLE_TRAINER) {
                     trainer = user;
-                }
-                else {
-                    throw new EntityNotFoundException(String.format("Trainer \"%s\" \"%s\" is not found", name, surname));
+                } else {
+                    throw new NonSuchEntityException(
+                            (String.format("Trainer \"%s\" \"%s\" is not found", name, surname)), 404, UUIDGenerator.generateUUID());
                 }
             }
         }
@@ -101,18 +103,18 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public User findClientByClientNameAndSurname(String name, String surname){
+    public User findClientByClientNameAndSurname(String name, String surname) {
 
         Optional<User> result = userRepository.findUserByUserNameAndUserSurname(name, surname);
         User client = new User();
-        if(result.isPresent()) {
+        if (result.isPresent()) {
             User user = result.get();
             for (UserRole role : user.getRoles()) {
-                if(role.getRoleName() == SystemRoles.ROLE_TRAINER) {
+                if (role.getRoleName() == SystemRoles.ROLE_TRAINER) {
                     client = user;
-                }
-                else {
-                    throw new EntityNotFoundException(String.format("Client \"%s\" \"%s\" is not found", name, surname));
+                } else {
+                    throw new NonSuchEntityException(
+                            (String.format("Client \"%s\" \"%s\" is not found", name, surname)), 404, UUIDGenerator.generateUUID());
                 }
             }
         }
@@ -121,7 +123,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public User createClientAccount(User user){
+    public User createClientAccount(User user) {
 
         User createdUser = userRepository.save(setRole(user, SystemRoles.ROLE_CLIENT));
 
@@ -132,7 +134,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public User createTrainerAccount(User user, String gymName){
+    public User createTrainerAccount(User user, String gymName) {
 
         User trainer = setGymForTrainer(user, gymName);
         User createdUser = userRepository.save(setRole(trainer, SystemRoles.ROLE_TRAINER));
@@ -145,19 +147,20 @@ public class UserService implements UserServiceInterface {
 
     @Override
     @Transactional
-    public User updateUser(User user){
+    public User updateUser(User user) {
         userRepository.save(user);
         return user;
     }
 
-    private User setGymForTrainer(User user, String gymName){
+    private User setGymForTrainer(User user, String gymName) {
 
         Gym gym;
         Optional<Gym> result = gymRepository.findGymByGymName(gymName);
-        if (result.isPresent()){
+        if (result.isPresent()) {
             gym = result.get();
-        }else{
-            throw new EntityNotFoundException(String.format("Gym \"%s\" is not found", gymName));
+        } else {
+            throw new NonSuchEntityException(
+                    (String.format("Gym \"%s\" is not found", gymName)), 404, UUIDGenerator.generateUUID());
         }
 
         user.setTrainerGym(gym);
